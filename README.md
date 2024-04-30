@@ -11,5 +11,8 @@ on both the front-end and back-end aspects, ensuring a seamless user experience 
 integration with the existing functionalities.
 ## Screenshots
 
-| ![login](./images/ss/login.jpg) | ![forgot pwd](./images/ss/fpwd.jpg)  | ![signup](./images/ss/register.jpg)  | ![dashboard](./images/ss/dashboard.jpg)  |
-| -------------------------- | -------------------------- | -------------------------- | -------------------------- |
+| ![login](./images/ss/login.jpg) | ![forgot pwd](./images/ss/fpwd.jpg)  | ![signup](./images/ss/register.jpg)|
+| -------------------------- | -------------------------- | -------------------------- |
+
+| ![dashboard](./images/ss/dashboard.jpg) | ![profile](./images/ss/profile.jpg)  | ![delete account](./images/ss/deleteac.jpg)|
+| -------------------------- | -------------------------- | -------------------------- |

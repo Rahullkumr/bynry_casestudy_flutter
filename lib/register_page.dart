@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/login_page.dart';
+import 'package:bynry_casestudy_flutter/login_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -9,6 +9,12 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
+  String _name = "";
+  String _email = "";
+  String _password = "";
+  bool _visible = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               // Text elements positioned at the top
               const Padding(
-                padding: EdgeInsets.only(top: 40),
+                padding: EdgeInsets.only(top: 50),
                 child: Row(
                   children: [
                     Expanded(
@@ -55,85 +61,151 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Enter your name',
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Username field
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Enter your name',
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your name';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _name = value!;
+                          },
                         ),
-                      ),
-                      const SizedBox(height: 10.0),
-                      const TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Enter Email Id',
+                        const SizedBox(height: 10.0),
+
+                        // Email field
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Enter Email Id',
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email address';
+                            }
+                            final emailRegExp = RegExp(
+                                r"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?");
+                            if (!emailRegExp.hasMatch(value)) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _email = value!;
+                          },
                         ),
-                      ),
-                      const SizedBox(height: 10.0), // Spacing between fields
-                      const TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                        ),
-                      ),
-                      const SizedBox(height: 10.0), // Spacing between fields
-                      const TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: 'Confirm Password',
-                        ),
-                      ),
-                      const SizedBox(height: 30.0),
-                      // Login button
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orange[900],
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                ),
+                        const SizedBox(height: 10.0),
+
+                        // Password field
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _visible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                               ),
                               onPressed: () {
-                                // Handle login button press
+                                setState(() {
+                                  _visible = !_visible;
+                                });
                               },
-                              child: const Text('REGISTER',
-                                  style: TextStyle(color: Colors.white)),
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 10.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Already have an Account ? ',
-                            style: TextStyle(
-                                color: Colors.grey[600], fontSize: 18.0),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LoginPage(),
+                          obscureText: !_visible,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            if (value.length < 8) {
+                              return 'Password must be at least 8 characters long';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _password = value!;
+                          },
+                        ),
+                        const SizedBox(height: 15.0),
+
+                        // Login button
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.orange[900],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
                                 ),
-                              );
-                            },
-                            child: const Text(
-                              "Login",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 86, 17, 170),
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    _formKey.currentState!.save();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content:
+                                            Text('Registration Successful'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const LoginPage(),
+                                      ),
+                                    );
+                                  } 
+                                },
+                                child: const Text('REGISTER',
+                                    style: TextStyle(color: Colors.white)),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(height: 20.0),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Already have an Account ? ',
+                              style: TextStyle(
+                                  color: Colors.grey[600], fontSize: 18.0),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginPage(),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                "Login",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 86, 17, 170),
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

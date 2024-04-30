@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/dashboard.dart';
-import 'package:myapp/register_page.dart';
+import 'package:bynry_casestudy_flutter/dashboard.dart';
+import 'package:bynry_casestudy_flutter/register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +11,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  final _forgotPasswordFormKey = GlobalKey<FormState>();
   String _email = "";
   String _password = "";
   bool _visible = false;
@@ -18,6 +19,8 @@ class _LoginPageState extends State<LoginPage> {
   void _forgotPassword() async {
     // Show the alert dialog
     final emailController = TextEditingController();
+    final emailRegExp = RegExp(
+        r"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?");
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -25,10 +28,14 @@ class _LoginPageState extends State<LoginPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                hintText: 'Enter your registered Email Id',
+            Form(
+              key: _forgotPasswordFormKey,
+              child: TextFormField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Enter your registered Email Id',
+                ),
+                keyboardType: TextInputType.emailAddress,
               ),
             ),
           ],
@@ -41,12 +48,19 @@ class _LoginPageState extends State<LoginPage> {
           TextButton(
             onPressed: () {
               final email = emailController.text;
-              if (email.isNotEmpty) {
+              if (email.isNotEmpty && emailRegExp.hasMatch(email)) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content:
                         Text('A password reset link has been sent to $email'),
                     backgroundColor: Colors.green,
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please enter valid Email Id'),
+                    backgroundColor: Colors.red,
                   ),
                 );
               }
@@ -68,7 +82,6 @@ class _LoginPageState extends State<LoginPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Text elements positioned at the top
               const Padding(
                 padding: EdgeInsets.only(top: 50),
                 child: Row(
@@ -114,6 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: const InputDecoration(
                             labelText: 'Enter the Email Id',
                           ),
+                          keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your email address';
@@ -196,6 +210,13 @@ class _LoginPageState extends State<LoginPage> {
                                   if (_formKey.currentState!.validate()) {
                                     _formKey.currentState!.save();
                                     // TODO: no return from dashboard
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content:
+                                            Text('Login Successful'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(

@@ -2,6 +2,8 @@
 
 ![](images/bynry.jpg)
 
+[Click here to DOWNLOAD the app](https://github.com/Rahullkumr/bynry_casestudy_flutter/releases/)
+
 ## Introduction
 
 Bynry is gearing up to introduce a new feature to its SAAS product, necessitating
